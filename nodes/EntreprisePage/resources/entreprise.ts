@@ -1,5 +1,8 @@
 import type { INodeProperties } from 'n8n-workflow';
 
+// Les identifiants dans les URL passent par encodeURIComponent et non par
+// toPathSegment, que recommande le gabarit n8n : cette fonction n'existe que
+// depuis n8n 2.46.1, et sans elle l'identifiant disparaît de l'URL.
 const pourEntreprise = { resource: ['entreprise'] };
 
 export const entrepriseDescription: INodeProperties[] = [
@@ -18,7 +21,7 @@ export const entrepriseDescription: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/organisation/entreprise/{{ toPathSegment($parameter.siren) }}',
+						url: '=/organisation/entreprise/{{ encodeURIComponent($parameter.siren) }}',
 					},
 				},
 			},
@@ -30,7 +33,7 @@ export const entrepriseDescription: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/organisation/entreprise/{{ toPathSegment($parameter.siren) }}/etablissement',
+						url: '=/organisation/entreprise/{{ encodeURIComponent($parameter.siren) }}/etablissement',
 					},
 				},
 			},
@@ -42,7 +45,7 @@ export const entrepriseDescription: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/organisation/entreprise/{{ toPathSegment($parameter.siren) }}/annonce',
+						url: '=/organisation/entreprise/{{ encodeURIComponent($parameter.siren) }}/annonce',
 					},
 				},
 			},

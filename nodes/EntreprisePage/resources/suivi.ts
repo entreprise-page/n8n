@@ -62,7 +62,7 @@ export const listeDescription: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'DELETE',
-						url: '=/suivi/liste/{{ toPathSegment($parameter.listeId) }}',
+						url: '=/suivi/liste/{{ encodeURIComponent($parameter.listeId) }}',
 					},
 					output: succes,
 				},
@@ -111,7 +111,7 @@ export const suiviDescription: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'POST',
-						url: '=/suivi/liste/{{ toPathSegment($parameter.listeId) }}/entreprise',
+						url: '=/suivi/liste/{{ encodeURIComponent($parameter.listeId) }}/entreprise',
 						body: { siren: '={{ $parameter.siren }}' },
 					},
 					output: succes,
@@ -137,7 +137,7 @@ export const suiviDescription: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'DELETE',
-						url: '=/suivi/liste/{{ toPathSegment($parameter.listeId) }}/entreprise/{{ toPathSegment($parameter.siren) }}',
+						url: '=/suivi/liste/{{ encodeURIComponent($parameter.listeId) }}/entreprise/{{ encodeURIComponent($parameter.siren) }}',
 					},
 					output: succes,
 				},
@@ -150,7 +150,7 @@ export const suiviDescription: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'DELETE',
-						url: '=/suivi/entreprise/{{ toPathSegment($parameter.siren) }}',
+						url: '=/suivi/entreprise/{{ encodeURIComponent($parameter.siren) }}',
 					},
 					output: succes,
 				},

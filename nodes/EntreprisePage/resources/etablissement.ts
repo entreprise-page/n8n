@@ -18,7 +18,7 @@ export const etablissementDescription: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/organisation/etablissement/{{ toPathSegment($parameter.siret) }}',
+						url: '=/organisation/etablissement/{{ encodeURIComponent($parameter.siret) }}',
 					},
 				},
 			},
