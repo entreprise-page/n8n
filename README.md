@@ -1,16 +1,16 @@
-# @entreprise-page/n8n-nodes-entreprise-page
+# @entreprise-page/n8n-nodes-entreprise
 
 [n8n](https://n8n.io) nodes for the [entreprise.page API](https://api.entreprise.page/v1): French companies (SIREN) and establishments (SIRET), company search, follow-up lists, and a trigger that starts a workflow when a followed company changes.
 
 ## Installation
 
-In n8n: **Settings → Community Nodes → Install**, then enter `@entreprise-page/n8n-nodes-entreprise-page`.
+In n8n: **Settings → Community Nodes → Install**, then enter `@entreprise-page/n8n-nodes-entreprise`.
 
 On a self-hosted instance, it can also be installed in the custom nodes folder:
 
 ```bash
 cd ~/.n8n/nodes
-npm install @entreprise-page/n8n-nodes-entreprise-page
+npm install @entreprise-page/n8n-nodes-entreprise
 ```
 
 ## Credentials
