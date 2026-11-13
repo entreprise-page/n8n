@@ -1,0 +1,55 @@
+{
+	"name": "@entreprise-page/n8n-nodes-entreprise-page",
+	"version": "0.0.0",
+	"description": "Nœuds n8n pour l'API entreprise.page : fiches d'entreprises et d'établissements, recherche, listes de suivi et événements des entreprises suivies.",
+	"license": "MIT",
+	"homepage": "https://github.com/entreprise-page/n8n-nodes-entreprise-page",
+	"keywords": [
+		"n8n-community-node-package",
+		"entreprise",
+		"siren",
+		"siret",
+		"sirene"
+	],
+	"author": {
+		"name": "entreprise.page",
+		"email": "support@entreprise.page"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/entreprise-page/n8n-nodes-entreprise-page.git"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"test": "node --test test/",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/EntreprisePageApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/EntreprisePage/EntreprisePage.node.js",
+			"dist/nodes/EntreprisePageTrigger/EntreprisePageTrigger.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "0.55.3",
+		"eslint": "9.32.0",
+		"n8n-workflow": "2.46.3",
+		"prettier": "3.6.2",
+		"typescript": "5.9.2"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
