@@ -16,7 +16,7 @@ export class EntreprisePageApi implements ICredentialType {
 		dark: 'file:../icons/entreprise-page.dark.svg',
 	};
 
-	documentationUrl = 'https://github.com/entreprise-page/n8n-nodes-entreprise-page#credentials';
+	documentationUrl = 'https://github.com/entreprise-page/n8n#credentials';
 
 	properties: INodeProperties[] = [
 		{

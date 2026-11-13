@@ -1,12 +1,12 @@
 # @entreprise-page/n8n-nodes-entreprise-page
 
-Nœuds [n8n](https://n8n.io) pour l'[API entreprise.page](https://api.entreprise.page/v1) : fiches d'entreprises et d'établissements, recherche, listes de suivi, et déclenchement d'un workflow quand une entreprise suivie change.
+[n8n](https://n8n.io) nodes for the [entreprise.page API](https://api.entreprise.page/v1): French companies (SIREN) and establishments (SIRET), company search, follow-up lists, and a trigger that starts a workflow when a followed company changes.
 
 ## Installation
 
-Dans n8n : **Settings → Community Nodes → Install**, puis saisir `@entreprise-page/n8n-nodes-entreprise-page`.
+In n8n: **Settings → Community Nodes → Install**, then enter `@entreprise-page/n8n-nodes-entreprise-page`.
 
-En auto-hébergé, on peut aussi l'installer dans le dossier des nœuds personnalisés :
+On a self-hosted instance, it can also be installed in the custom nodes folder:
 
 ```bash
 cd ~/.n8n/nodes
@@ -15,30 +15,30 @@ npm install @entreprise-page/n8n-nodes-entreprise-page
 
 ## Credentials
 
-Créer un credential **Entreprise.page API** avec la clé d'API de l'organisation, visible dans le compte entreprise.page. Le bouton de test appelle `GET /quota`, qui ne consomme pas de quota.
+Create an **Entreprise.page API** credential with the API key of your organisation, shown in your entreprise.page account. The credential test calls `GET /quota`, which does not use your quota.
 
-Le champ **Base URL** ne sert qu'à viser un autre environnement de l'API.
+Change **Base URL** only to target another environment of the API.
 
-## Nœud Entreprise.page
+## Entreprise.page node
 
-| Ressource      | Opérations                                                                                                          |
-| -------------- | ------------------------------------------------------------------------------------------------------------------- |
-| Company        | Get (par SIREN), Get Establishments, Get Legal Notices (annonces BODACC), Search                                    |
-| Establishment  | Get (par SIRET)                                                                                                     |
-| Follow-Up List | Get Many, Create, Delete                                                                                            |
-| Follow-Up      | Follow (ajouter à une liste), Remove From List, Unfollow (de toutes les listes), Get Many (entreprises d'une liste) |
+| Resource       | Operations                                                                                           |
+| -------------- | ---------------------------------------------------------------------------------------------------- |
+| Company        | Get (by SIREN), Get Establishments, Get Legal Notices (BODACC), Search                               |
+| Establishment  | Get (by SIRET)                                                                                       |
+| Follow-Up List | Get Many, Create, Delete                                                                             |
+| Follow-Up      | Follow (add to a list), Remove From List, Unfollow (from every list), Get Many (companies of a list) |
 
-La fiche, la recherche et les établissements d'une entreprise consomment le quota de l'organisation, comme les mêmes appels à l'API. Le nœud est utilisable comme outil par un agent IA.
+Getting a company, its establishments and searching use your organisation's quota, like the same API calls. The node can be used as a tool by an AI agent.
 
-## Nœud Entreprise.page Trigger
+## Entreprise.page Trigger node
 
-Déclenche le workflow quand une entreprise d'une liste de suivi change : fermeture, nouvel établissement, changement de dénomination, de siège, d'activité, de forme juridique, de diffusion, ou nouveau dirigeant.
+Starts the workflow when a company of a follow-up list changes: company or establishment closed, new establishment, name, head office, main activity, legal form or diffusion changed, or new executive.
 
-- À l'activation du workflow, le nœud abonne son url de webhook à la liste choisie. À la désactivation, il la désabonne. L'alerte de la liste (email, webhook) n'est pas modifiée.
-- Chaque appel reçu porte le token de l'abonnement dans l'en-tête `X-Entreprise-Page-Auth`. Le nœud refuse (401) un appel sans ce token.
-- Une liste accepte au plus 10 abonnements. « Listen for test event » en crée un temporaire, supprimé à la fin de l'écoute.
+- When the workflow is activated, the node subscribes its webhook URL to the chosen list. When it is deactivated, it unsubscribes. The list's own alert (email, webhook) is left unchanged.
+- Each call carries the subscription token in the `X-Entreprise-Page-Auth` header. The node rejects (401) any call without it.
+- A list accepts at most 10 subscriptions. "Listen for test event" creates a temporary one, removed when listening stops.
 
-L'élément produit est l'événement envoyé par l'API :
+Each item is the event sent by the API:
 
 ```json
 {
@@ -51,19 +51,23 @@ L'élément produit est l'événement envoyé par l'API :
 }
 ```
 
-`etablissement` (avec `siret`) s'ajoute pour les événements sur un établissement.
+Events on an establishment also include `siret` and `etablissement`.
 
-### Instance n8n auto-hébergée
+### Self-hosted n8n
 
-L'API n'appelle que des url **https** joignables depuis Internet : une instance en `http://`, ou sur un réseau privé, est refusée à l'abonnement. Derrière un reverse proxy HTTPS, il faut indiquer à n8n son url publique pour que l'url du webhook soit correcte :
+The API only calls **https** URLs reachable from the Internet: an instance served over `http://`, or on a private network, is refused when subscribing. Behind an HTTPS reverse proxy, tell n8n its public URL so that the webhook URL is correct:
 
 ```bash
-WEBHOOK_URL=https://n8n.mondomaine.fr/
+WEBHOOK_URL=https://n8n.example.com/
 N8N_PROXY_HOPS=1
 ```
 
-Pour un essai, un tunnel (`cloudflared tunnel`, ngrok, ou `n8n start --tunnel`) donne une url https publique à mettre dans `WEBHOOK_URL`.
+To try it out, a tunnel (`cloudflared tunnel`, ngrok, or `n8n start --tunnel`) gives a public https URL to set in `WEBHOOK_URL`.
 
-## Licence
+## Development
+
+This repository is a read-only mirror: the package is developed in the entreprise.page repository and synchronised here on every change.
+
+## License
 
 MIT

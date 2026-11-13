@@ -1,9 +1,9 @@
 {
 	"name": "@entreprise-page/n8n-nodes-entreprise-page",
 	"version": "0.0.0",
-	"description": "Nœuds n8n pour l'API entreprise.page : fiches d'entreprises et d'établissements, recherche, listes de suivi et événements des entreprises suivies.",
+	"description": "n8n nodes for the entreprise.page API: French companies and establishments, search, follow-up lists and events of followed companies.",
 	"license": "MIT",
-	"homepage": "https://github.com/entreprise-page/n8n-nodes-entreprise-page",
+	"homepage": "https://github.com/entreprise-page/n8n#readme",
 	"keywords": [
 		"n8n-community-node-package",
 		"entreprise",
@@ -17,7 +17,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/entreprise-page/n8n-nodes-entreprise-page.git"
+		"url": "https://github.com/entreprise-page/n8n.git"
 	},
 	"scripts": {
 		"build": "n8n-node build",
@@ -26,7 +26,11 @@
 		"lint": "n8n-node lint",
 		"lint:fix": "n8n-node lint --fix",
 		"test": "node --test test/",
+		"release": "n8n-node release",
 		"prepublishOnly": "n8n-node prerelease"
+	},
+	"publishConfig": {
+		"access": "public"
 	},
 	"files": [
 		"dist"
