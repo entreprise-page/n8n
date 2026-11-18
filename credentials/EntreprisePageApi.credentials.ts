@@ -46,7 +46,7 @@ export class EntreprisePageApi implements ICredentialType {
 		},
 	};
 
-	// GET /quota ne consomme pas de quota : il vérifie seulement la clé.
+	// GET /quota does not use any quota: it only checks the key.
 	test: ICredentialTestRequest = {
 		request: {
 			baseURL: '={{$credentials.baseUrl.replace(/\\/+$/, "")}}',

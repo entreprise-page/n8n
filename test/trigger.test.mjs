@@ -1,5 +1,5 @@
-// Tests du trigger sur le build (dist/), avec un contexte n8n simulé : on
-// vérifie les appels à l'API et le contrôle du token, pas l'interface.
+// Tests of the trigger on the build (dist/), with a simulated n8n context:
+// they check the API calls and the token check, not the UI.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { beforeEach, describe, it } from 'node:test';
@@ -9,7 +9,7 @@ const {
 	EntreprisePageTrigger,
 } = require('../dist/nodes/EntreprisePageTrigger/EntreprisePageTrigger.node.js');
 
-const URL_WEBHOOK = 'https://n8n.exemple.fr/webhook/3f2a/webhook';
+const URL_WEBHOOK = 'https://n8n.example.com/webhook/3f2a/webhook';
 
 function contexte({ reponses = {}, parametres = {}, entetes = {}, corps = {} } = {}) {
 	const staticData = {};
@@ -20,7 +20,7 @@ function contexte({ reponses = {}, parametres = {}, entetes = {}, corps = {} } =
 		staticData,
 		requetes,
 		reponse,
-		getCredentials: async () => ({ apiKey: 'cle', baseUrl: 'https://api.entreprise.page/v1/' }),
+		getCredentials: async () => ({ apiKey: 'key', baseUrl: 'https://api.entreprise.page/v1/' }),
 		getNode: () => ({
 			name: 'Entreprise.page Trigger',
 			type: 'entreprisePageTrigger',
@@ -59,7 +59,7 @@ function contexte({ reponses = {}, parametres = {}, entetes = {}, corps = {} } =
 const trigger = new EntreprisePageTrigger();
 const hooks = trigger.webhookMethods.default;
 
-describe('abonnement du trigger', () => {
+describe('trigger subscription', () => {
 	let ctx;
 
 	beforeEach(() => {
@@ -75,7 +75,7 @@ describe('abonnement du trigger', () => {
 		});
 	});
 
-	it("s'abonne à la liste avec l'url du webhook et garde l'id et le token", async () => {
+	it('subscribes to the list with the webhook URL and keeps the ID and token', async () => {
 		assert.equal(await hooks.create.call(ctx), true);
 
 		assert.deepEqual(ctx.requetes, [
@@ -90,8 +90,8 @@ describe('abonnement du trigger', () => {
 		assert.deepEqual(ctx.staticData, { abonnementId: 12, token: 'secret' });
 	});
 
-	it("vérifie que l'abonnement existe encore pour la même url", async () => {
-		assert.equal(await hooks.checkExists.call(ctx), false, 'Sans abonnement enregistré');
+	it('checks that the subscription still exists for the same URL', async () => {
+		assert.equal(await hooks.checkExists.call(ctx), false, 'Without a stored subscription');
 		assert.equal(ctx.requetes.length, 0);
 
 		Object.assign(ctx.staticData, { abonnementId: 12, token: 'secret' });
@@ -101,11 +101,11 @@ describe('abonnement du trigger', () => {
 		assert.equal(await hooks.checkExists.call(ctx), true);
 
 		ctx.helpers.httpRequestWithAuthentication = async () => [{ id: 13, url: URL_WEBHOOK }];
-		assert.equal(await hooks.checkExists.call(ctx), false, `${liste} ne le connaît plus`);
+		assert.equal(await hooks.checkExists.call(ctx), false, `${liste} no longer knows it`);
 		assert.deepEqual(ctx.staticData, {});
 	});
 
-	it("se désabonne, même si l'abonnement a déjà disparu", async () => {
+	it('unsubscribes, even if the subscription is already gone', async () => {
 		Object.assign(ctx.staticData, { abonnementId: 12, token: 'secret' });
 		ctx.helpers.httpRequestWithAuthentication = async (_, options) => {
 			ctx.requetes.push(options);
@@ -119,14 +119,14 @@ describe('abonnement du trigger', () => {
 	});
 });
 
-describe('réception des événements', () => {
+describe('receiving events', () => {
 	const evenement = {
 		evenement: 'fermeture_entreprise',
 		siren: '443061841',
 		liste: { id: 2, nom: 'Clients' },
 	};
 
-	it("déclenche le workflow avec l'événement reçu", async () => {
+	it('triggers the workflow with the received event', async () => {
 		const ctx = contexte({ entetes: { 'x-entreprise-page-auth': 'secret' }, corps: evenement });
 		ctx.staticData.token = 'secret';
 
@@ -134,16 +134,17 @@ describe('réception des événements', () => {
 	});
 
 	for (const [cas, entetes] of [
-		['sans token', {}],
-		['avec un autre token', { 'x-entreprise-page-auth': 'secrez' }],
-		['avec un token plus long', { 'x-entreprise-page-auth': 'secret-' }],
+		['without a token', {}],
+		['with another token', { 'x-entreprise-page-auth': 'secrez' }],
+		['with a longer token', { 'x-entreprise-page-auth': 'secret-' }],
 	]) {
-		it(`refuse un appel ${cas}`, async () => {
+		it(`rejects a call ${cas}`, async () => {
 			const ctx = contexte({ entetes, corps: evenement });
 			ctx.staticData.token = 'secret';
 
 			assert.deepEqual(await trigger.webhook.call(ctx), { noWebhookResponse: true });
 			assert.equal(ctx.reponse.statut, 401);
+			assert.deepEqual(ctx.reponse.corps, { error: 'Invalid token' });
 		});
 	}
 });

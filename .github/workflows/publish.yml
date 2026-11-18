@@ -45,10 +45,16 @@ jobs:
           npm run build
           npm test
 
-      # The published version is the tag's: v1.2.0 publishes 1.2.0, whatever
-      # package.json says (it stays at 0.0.0 in the source repository).
-      - name: Set version
-        run: npm version --no-git-tag-version --allow-same-version "${GITHUB_REF_NAME#v}"
+      # The repository's package.json is the source of the published version:
+      # a tag that does not match it is refused, so that the package on npm can
+      # always be verified against the source of its tag.
+      - name: Check version
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [[ "$version" != "${GITHUB_REF_NAME#v}" ]]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $version"
+            exit 1
+          fi
 
       # In GitHub Actions, `n8n-node release` lints, builds and runs
       # `npm publish` with provenance enabled.

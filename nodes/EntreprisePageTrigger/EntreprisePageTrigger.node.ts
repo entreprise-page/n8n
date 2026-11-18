@@ -13,7 +13,7 @@ import {
 	type JsonObject,
 } from 'n8n-workflow';
 
-/** En-tête qui porte le token de l'abonnement à chaque appel de l'API. */
+/** Header carrying the subscription token on every call from the API. */
 const ENTETE_TOKEN = 'x-entreprise-page-auth';
 
 interface Abonnement {
@@ -48,7 +48,7 @@ async function appelerApi(
 	}
 }
 
-/** Compare en temps constant, pour ne pas laisser deviner le token. */
+/** Compares in constant time, so that the token cannot be guessed. */
 function memeToken(recu: string, attendu: string): boolean {
 	if (recu.length !== attendu.length) {
 		return false;
@@ -140,10 +140,10 @@ export class EntreprisePageTrigger implements INodeType {
 		},
 	};
 
-	// L'abonnement est créé à l'activation du workflow (et à l'écoute d'un
-	// événement de test), puis supprimé à sa désactivation. Son identifiant et
-	// son token, renvoyé une seule fois par l'API, restent dans les données
-	// statiques du nœud.
+	// The subscription is created when the workflow is activated (and when
+	// listening for a test event), then deleted when it is deactivated. Its ID
+	// and its token, returned only once by the API, are kept in the node's
+	// static data.
 	webhookMethods = {
 		default: {
 			async checkExists(this: IHookFunctions): Promise<boolean> {
@@ -192,7 +192,7 @@ export class EntreprisePageTrigger implements INodeType {
 					try {
 						await appelerApi.call(this, 'DELETE', `/suivi/abonnement/${donnees.abonnementId}`);
 					} catch (error) {
-						// Déjà supprimé, par exemple avec sa liste : rien à défaire.
+						// Already deleted, for example with its list: nothing to undo.
 						if ((error as NodeApiError).httpCode !== '404') {
 							return false;
 						}
@@ -212,7 +212,7 @@ export class EntreprisePageTrigger implements INodeType {
 		const recu = this.getHeaderData()[ENTETE_TOKEN];
 
 		if (!token || typeof recu !== 'string' || !memeToken(recu, token)) {
-			this.getResponseObject().status(401).json({ erreur: 'Token invalide' });
+			this.getResponseObject().status(401).json({ error: 'Invalid token' });
 
 			return { noWebhookResponse: true };
 		}

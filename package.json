@@ -1,6 +1,6 @@
 {
 	"name": "@entreprise-page/n8n-nodes-entreprise",
-	"version": "0.0.0",
+	"version": "0.0.5",
 	"description": "n8n nodes for the entreprise.page API: French companies and establishments, search, follow-up lists and events of followed companies.",
 	"license": "MIT",
 	"homepage": "https://github.com/entreprise-page/n8n#readme",

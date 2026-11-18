@@ -3,13 +3,13 @@ import type { INodeProperties } from 'n8n-workflow';
 const pourListe = { resource: ['liste'] };
 const pourSuivi = { resource: ['suivi'] };
 
-// Les routes de suppression et d'ajout répondent sans corps : on rend un
-// élément pour que le workflow continue.
+// The add and delete routes respond without a body: return an item so that
+// the workflow goes on.
 const succes = {
 	postReceive: [{ type: 'set' as const, properties: { value: '={{ { "success": true } }}' } }],
 };
 
-/** Choix d'une liste de suivi de l'organisation, par son nom. */
+/** Picks a follow-up list of the organisation, by its name. */
 export const champListe: INodeProperties = {
 	displayName: 'List Name or ID',
 	name: 'listeId',

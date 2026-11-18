@@ -1,8 +1,8 @@
 import type { INodeProperties } from 'n8n-workflow';
 
-// Les identifiants dans les URL passent par encodeURIComponent et non par
-// toPathSegment, que recommande le gabarit n8n : cette fonction n'existe que
-// depuis n8n 2.46.1, et sans elle l'identifiant disparaît de l'URL.
+// Identifiers in URLs go through encodeURIComponent rather than toPathSegment,
+// which the n8n starter recommends: that function only exists since n8n
+// 2.46.1, and without it the identifier is dropped from the URL.
 const pourEntreprise = { resource: ['entreprise'] };
 
 export const entrepriseDescription: INodeProperties[] = [
