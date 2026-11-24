@@ -193,8 +193,11 @@ export class EntreprisePageTrigger implements INodeType {
 						await appelerApi.call(this, 'DELETE', `/suivi/abonnement/${donnees.abonnementId}`);
 					} catch (error) {
 						// Already deleted, for example with its list: nothing to undo.
+						// Any other error (401, 5xx, network) is reported to the user, and the
+						// subscription is kept so that deactivating again can retry.
 						if ((error as NodeApiError).httpCode !== '404') {
-							return false;
+							// appelerApi already wrapped it: NodeApiError hands back the same error.
+							throw new NodeApiError(this.getNode(), error as JsonObject);
 						}
 					}
 				}

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.6
+
+- Fix: when the trigger is deactivated, an error deleting the subscription other than a 404 (401, 5xx, network) is now shown to the user instead of being ignored. The subscription is kept, so deactivating again retries.
+
 ## 0.0.5
 
 - The trigger's 401 response body is now `{ "error": "Invalid token" }`.

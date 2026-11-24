@@ -117,6 +117,30 @@ describe('trigger subscription', () => {
 		assert.equal(ctx.requetes[0].url, 'https://api.entreprise.page/v1/suivi/abonnement/12');
 		assert.deepEqual(ctx.staticData, {});
 	});
+
+	for (const [cas, erreur, code] of [
+		['401', Object.assign(new Error('Unauthorized'), { httpCode: '401' }), '401'],
+		['500', Object.assign(new Error('Server Error'), { httpCode: '500' }), '500'],
+		[
+			'network',
+			Object.assign(new Error('connect ECONNREFUSED'), { code: 'ECONNREFUSED' }),
+			'ECONNREFUSED',
+		],
+	]) {
+		it(`reports a ${cas} error when unsubscribing and keeps the subscription`, async () => {
+			Object.assign(ctx.staticData, { abonnementId: 12, token: 'secret' });
+			ctx.helpers.httpRequestWithAuthentication = async () => {
+				throw erreur;
+			};
+
+			await assert.rejects(hooks.delete.call(ctx), (rejet) => {
+				assert.equal(rejet.constructor.name, 'NodeApiError');
+				assert.equal(rejet.httpCode, code);
+				return true;
+			});
+			assert.deepEqual(ctx.staticData, { abonnementId: 12, token: 'secret' });
+		});
+	}
 });
 
 describe('receiving events', () => {
